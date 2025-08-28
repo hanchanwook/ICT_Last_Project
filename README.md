@@ -72,10 +72,8 @@
 **PPT**
 https://www.canva.com/design/DAGsjb9QxUQ/4xjvpa2577XkvSgeSnmJUw/edit
 
-**ERD흐름도**
-
-
 **Flow-Chat**
+https://www.figma.com/board/PcIatsSUZh5JugDRAgYtCk/LMSync-%ED%94%8C%EB%A1%9C%EC%9A%B0-%EC%B0%A8%ED%8A%B8?node-id=0-1
 
-
-**시연영상**
+**시연영상 및 자료료**
+https://drive.google.com/drive/folders/1DdCM3h6TjwsCP42KAWNusQrR8dmt08Gj
