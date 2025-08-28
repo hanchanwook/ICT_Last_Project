@@ -1,0 +1,140 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+group = 'com.jakdang'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.1"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.kafka:spring-kafka'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.0.1'
+
+    // 파일용 임시 feign client DI
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'io.github.openfeign:feign-hc5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.springframework.cloud:spring-cloud-openfeign-core'
+    implementation 'io.github.openfeign:feign-jackson'
+    implementation 'io.github.openfeign:feign-core'
+
+    // 채팅 웹소켓
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // argon2
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // QueryDSL 의존성 수정
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+
+    // Jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+
+    // @NotBlank 사용을 위해 추가
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+    // Excel 스타일링을 위한 Apache POI
+	implementation 'org.apache.poi:poi:5.2.3'
+	implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+    // .env 파일 지원
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+
+
+    annotationProcessor(
+            "jakarta.persistence:jakarta.persistence-api",
+            "jakarta.annotation:jakarta.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+            
+    )
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// JVM 옵션 설정 (한글 인코딩)
+bootRun {
+    jvmArgs = [
+        '-Dfile.encoding=UTF-8',
+        '-Dspring.output.ansi.enabled=ALWAYS',
+        '-Duser.language=ko',
+        '-Duser.country=KR'
+    ]
+}
+
+// QueryDSL 설정 수정
+def querydslDir = "$buildDir/generated/querydsl"
+
+// JavaCompile 작업 설정을 하나로 통합
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-parameters", "-g"]
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+    options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+// clean 태스크 실행 시 QClass 삭제
+clean {
+    delete file(querydslDir)
+}

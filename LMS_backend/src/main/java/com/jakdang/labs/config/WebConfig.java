@@ -1,0 +1,34 @@
+package com.jakdang.labs.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.jakdang.labs.config.interceptor.PermissionInterceptor;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    private final PermissionInterceptor permissionInterceptor;
+
+    public WebConfig(PermissionInterceptor permissionInterceptor) {
+        this.permissionInterceptor = permissionInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(permissionInterceptor)
+                .addPathPatterns(
+                    "/api/course/**", 
+                    "/api/classroom/**", 
+                    "/api/subject/**", 
+                    "/api/subDetail/**", 
+                    "/api/exam/**", 
+                    "/api/evaluations/**", 
+                    "/api/attendance/**", 
+                    "/api/registration/**", 
+                    "/api/attendance/management/**"
+                );
+    }
+}
+

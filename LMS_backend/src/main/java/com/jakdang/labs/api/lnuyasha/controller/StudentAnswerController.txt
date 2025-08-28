@@ -1,0 +1,49 @@
+package com.jakdang.labs.api.lnuyasha.controller;
+
+import com.jakdang.labs.api.lnuyasha.dto.AnswerDTO;
+import com.jakdang.labs.api.lnuyasha.service.StudentAnswerService;
+import com.jakdang.labs.api.youngjae.dto.ResponseDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * 학생 답안 조회 컨트롤러
+ */
+@Slf4j
+@RestController
+@RequestMapping("/api/instructor/exams")
+@RequiredArgsConstructor
+public class StudentAnswerController {
+    
+    private final StudentAnswerService studentAnswerService;
+    
+    /**
+     * 학생 답안 조회
+     * GET /api/instructor/exams/{templateId}/students/{memberId}/answers
+     */
+    @GetMapping("/{templateId}/students/{memberId}/answers")
+    public ResponseEntity<ResponseDTO<AnswerDTO>> getStudentAnswers(
+            @PathVariable String templateId,
+            @PathVariable String memberId) {
+        try {
+            log.info("학생 답안 조회 요청: templateId={}, memberId={}", templateId, memberId);
+            
+            // 학생 답안 조회
+            AnswerDTO response = studentAnswerService.getStudentAnswers(templateId, memberId);
+            
+            return ResponseEntity.ok(ResponseDTO.createSuccessResponse("답안 조회 성공", response));
+            
+        } catch (IllegalArgumentException e) {
+            log.error("학생 답안 조회 실패 (400): {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(ResponseDTO.createErrorResponse(400, e.getMessage()));
+                    
+        } catch (Exception e) {
+            log.error("학생 답안 조회 실패 (500): {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError()
+                    .body(ResponseDTO.createErrorResponse(500, "서버 내부 오류가 발생했습니다: " + e.getMessage()));
+        }
+    }
+} 

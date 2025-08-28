@@ -1,0 +1,220 @@
+server:
+  port: 19091
+  tomcat:
+    uri-encoding: UTF-8
+
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: LMS-project-backend
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+  # ??? ??
+  messages:
+    encoding: UTF-8
+
+  # DB 설정
+  datasource:
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&defaultAuthenticationPlugin=mysql_native_password&serverRsaPublicKeyFile= 
+      username: ${DB_USER}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        connection-timeout: 30000
+        maximum-pool-size: 10
+        minimum-idle: 5
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+
+
+ #JWT 임시 셋팅
+  jwt:
+    refresh:
+      cookie:
+        name: refresh
+      expired: 86400000
+    access:
+      expired: 36400000
+    secret:
+      code: zzX9@mK2$pL7@qR5^vN3&hB6*fD1!jW8%cT4uY0sA2_eG5!sh3lQ7YSWSF
+
+  # Data JPA ??
+  jpa:
+       hibernate:
+           ddl-auto: update
+           naming:
+               implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+               physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+       show-sql: true
+       properties:
+           hibernate:
+               format_sql: true
+
+  # Mail 설정
+  mail:
+    host: smtp.naver.com
+    port: 587
+    username: hussar12@naver.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+
+  # OAUTH ?? ???
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          naver:
+#            client-id:
+#            client-secret:
+#            scope:
+#              - name
+#              - email
+#            client-name: Naver
+#            authorization-grant-type:
+#            redirect-uri:
+#
+#          kakao:
+#            client-id:
+#            client-secret:
+#            scope:
+#              - profile_nickname
+#              - profile_image
+#              - account_email
+#            client-name: Kakao
+#            authorization-grant-type:
+#            client-authentication-method:
+#            redirect-uri:
+#
+#          apple:
+#            client-id:
+#            client-secret:
+#            scope:
+#              - name
+#              - email
+#            client-name: Apple
+#            authorization-grant-type:
+#            client-authentication-method:
+#            redirect-uri:
+#
+#          google:
+#            client-id:
+#            client-secret:
+#            scope:
+#              - email
+#              - profile
+#
+#        provider:
+#            naver:
+#              authorization-uri: https://nid.naver.com/oauth2.0/authorize
+#              token-uri: https://nid.naver.com/oauth2.0/token
+#              user-info-uri: https://openapi.naver.com/v1/nid/me
+#              user-name-attribute: response
+#
+#            kakao:
+#              authorization-uri: https://kauth.kakao.com/oauth/authorize
+#              token-uri: https://kauth.kakao.com/oauth/token
+#              user-info-uri: https://kapi.kakao.com/v2/user/me
+#              user-name-attribute: id
+#
+#            apple:
+#              authorization-uri: https://appleid.apple.com/auth/authorize?scope=name%20email&response_mode=form_post
+#              token-uri: https://appleid.apple.com/auth/token
+
+# AWS S3
+#cloud:
+#  aws:
+#    credentials:
+#      accessKey:
+#      secretKey: 
+#
+#    s3:
+#      bucket:
+#      region:
+#        static: ap-northeast-2
+#      stack:
+#        auto: false
+
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          socket: DEBUG
+        messaging: DEBUG
+        bean:
+          factory:
+            support: DEBUG
+      security: DEBUG
+    com:
+      jakdang:
+        labs: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  charset:
+    console: UTF-8
+    file: UTF-8
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    docExpansion: none
+    server-url: http://localhost:19091/api
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+file-service:
+  url: http://lmsync.site:8080/api/file
+
+post-service:
+    url: http://lmsync.site:9000/api/posts
+
+feign:
+  httpclient:
+    hc5:
+      enabled: true
+
+fegin:
+  school:
+    appId: JAKDANG-LABS
+
+
+app:
+  frontend-url: http://localhost:5173
+  frontend-admin-url: http://localhost:7001
+  domain: localhost
+  dev-mode: true
+
+jasypt:
+  encryptor:
+    password: local

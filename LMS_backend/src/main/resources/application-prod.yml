@@ -1,0 +1,5 @@
+app:
+  frontend-url: http://lmsync.site
+  frontend-admin-url: http://lmsync.site
+  domain: lmsync.site
+  dev-mode: false 
